@@ -7,6 +7,11 @@ export default function Home() {
   const [status, setStatus] = useState<string>("");
   const [downloadUrl, setDownloadUrl] = useState<string>("");
 
+  // IMPORTANT: utilise la variable Railway si présente
+  const API_BASE =
+    process.env.NEXT_PUBLIC_API_BASE_URL ??
+    "https://braillescore-backend-production.up.railway.app";
+
   async function handleConvert() {
     if (!file) return;
 
@@ -16,7 +21,7 @@ export default function Home() {
     const form = new FormData();
     form.append("file", file);
 
-    const res = await fetch("http://127.0.0.1:8000/convert", {
+    const res = await fetch(`${API_BASE}/convert`, {
       method: "POST",
       body: form,
     });
@@ -27,14 +32,15 @@ export default function Home() {
     }
 
     const data = await res.json();
+
     setStatus("Conversion terminée.");
-    setDownloadUrl(`http://127.0.0.1:8000${data.download_url}`);
+    setDownloadUrl(`${API_BASE}${data.download_url}`);
   }
 
   return (
     <main style={{ padding: 24, fontFamily: "Arial, sans-serif" }}>
-      <h1>BrailleScore (MVP)</h1>
-      <p>Upload un fichier MusicXML (.xml/.musicxml) ou MuseScore (.mscz/.mscx).</p>
+      <h1>BrailleScore</h1>
+      <p>Convertissez vos partitions en braille instantanément.</p>
 
       <input
         type="file"
